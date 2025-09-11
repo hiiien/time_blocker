@@ -25,7 +25,10 @@ function ToDo({ toDo, onSelect, onColorSelect }: ToDoProps) {
 			<p
 				className={toDoDone ? "flex-1 h-full flex items-center line-through text-black " : "flex-1 flex items-center h-full text-black"}
 				onClick={() => onSelect(toDo)}
-			>{toDo.text}</p>
+			>
+				{toDo.text}
+			</p>
+
 			<div className="relative inline-block">
 				<div className={backgroundColor + " h-4 w-8 rounded-4xl border-black border-1"}
 					onClick={() => setShowPicker(!showPicker)}

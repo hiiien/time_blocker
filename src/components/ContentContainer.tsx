@@ -4,13 +4,14 @@ import ToDoCalender from "./ToDoCalender";
 import EditPopup from "./EditPopup";
 
 export type Color = "red" | "blue" | "green";
+export type ToDoDate = Date | null
 
 export type ToDoType = {
-	id: string;
+	id: string,
 	text: string,
 	color: Color,
-	startTime: Date | null,
-	endTime: Date | null,
+	startTime: ToDoDate,
+	endTime: ToDoDate,
 };
 
 function ContentContainer() {
@@ -27,9 +28,9 @@ function ContentContainer() {
 		setSelectedToDo(null)
 	}, [])
 
-	const handleSave = (updatedText: string) => {
+	const handleSave = (updatedText: string, updatedStart: ToDoDate, updatedEnd: ToDoDate) => {
 		setToDos(prev => {
-			const updated = prev.map(todo => todo.id === selectedToDo!.id ? { ...todo, text: updatedText.trim() } : todo);
+			const updated = prev.map(todo => todo.id === selectedToDo!.id ? { ...todo, text: updatedText.trim(), startTime: updatedStart, endTime: updatedEnd } : todo);
 			const filtered = updated.filter((todo, i) => todo.text.trim() !== "" || i === updated.length - 1);
 			if (filtered.length === 0 || filtered[filtered.length - 1].text !== "") {
 				return [...filtered, { id: Date.now().toString(), text: "", color: lastUsedColor, startTime: null, endTime: null }]
