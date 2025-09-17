@@ -5,7 +5,6 @@ import type { ToDoType } from "./ContentContainer";
 
 type CalenderProps = {
 	toDos: ToDoType[]
-	onCalenderUpdate: (now: Date) => void
 }
 
 type CalenderItemProps = {
@@ -17,69 +16,40 @@ type CalenderItemProps = {
 const height: number = 1000;
 
 
-function useNow(refreshMs = 60_000) {
-	const [now, setNow] = useState(() => Date.now());
-
-	useEffect(() => {
-		let intervalId: number | null = null;
-
-		const alignDelay =
-			refreshMs === 60_000
-				? (60 - new Date().getSeconds()) * 1000 - new Date().getMilliseconds()
-				: refreshMs;
-
-		const startInterval = () => {
-			intervalId = window.setInterval(() => setNow(Date.now()), refreshMs);
-		};
-
-		const timeoutId = window.setTimeout(() => {
-			setNow(Date.now());
-			startInterval();
-		}, Math.max(0, alignDelay));
-
-		const onVis = () => setNow(Date.now());
-		document.addEventListener("visibilitychange", onVis);
-
-		return () => {
-			if (intervalId) clearInterval(intervalId);
-			clearTimeout(timeoutId);
-			document.removeEventListener("visibilitychange", onVis);
-		};
-	}, [refreshMs]);
-
-	return new Date(now);
-}
 
 function ToDoCalender({ toDos }: CalenderProps) {
-	const containerHeight = "h-[" + height + "px] ";
-	const now = useNow(60_000)
+	const [, forceUpdate] = useState(Date.now());
+
+	useEffect(() => {
+		const id = setInterval(() => forceUpdate(Date.now()), 1000);
+		return () => clearInterval(id);
+	}, []); const containerHeight = "h-[" + height + "px] ";
+	const realNow = Date.now();
+	const nowDate = new Date(realNow)
 
 	return (
-		<div className={containerHeight + "w-1/2 relative"}>
+		<div className={containerHeight + "w-1/2 relative h-auto"}>
 			{toDos.map((todo) => {
 				if (!todo.text.length) return null;
-				if (todo.endTime && todo.endTime < now) return null;
 
-				const start = todoDatetoDate(todo.startTime, now);
-				const end = todoDatetoDate(todo.endTime, now);
+				// ✅ filter using alignedNow (matches parent todo list logic)
+				if (todo.endTime && todo.endTime < nowDate) return null;
 
-				if (!(start instanceof Date) || isNaN(start.getTime())) {
-					console.warn("Invalid startTime:", todo.startTime);
-					return null;
-				}
-				if (!(end instanceof Date) || isNaN(end.getTime())) {
-					console.warn("Invalid endTime:", todo.endTime);
-					return null;
-				}
+				const start = todoDatetoDate(todo.startTime, nowDate);
+				const end = todoDatetoDate(todo.endTime, nowDate);
 
-				let durationHours: number
-				let offsetHours: number
-				if (start < now) {
+				if (!(start instanceof Date) || isNaN(start.getTime())) return null;
+				if (!(end instanceof Date) || isNaN(end.getTime())) return null;
 
-					durationHours = (end.getTime() - now.getTime()) / (1000 * 60 * 60);
-					offsetHours = 0
+				let durationHours: number;
+				let offsetHours: number;
+
+				// ✅ size/position using realNow for smoother shrinking
+				if (start < nowDate) {
+					durationHours = (end.getTime() - nowDate.getTime()) / (1000 * 60 * 60);
+					offsetHours = 0;
 				} else {
-					offsetHours = (start.getTime() - now.getTime()) / (1000 * 60 * 60);
+					offsetHours = (start.getTime() - nowDate.getTime()) / (1000 * 60 * 60);
 					durationHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
 				}
 

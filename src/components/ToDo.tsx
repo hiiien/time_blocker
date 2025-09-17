@@ -21,16 +21,16 @@ function ToDo({ toDo, onSelect, onColorSelect }: ToDoProps) {
 
 
 	return (
-		<div className="flex py-0 flex-row items-center w-full border-b bg-white h-10 border-b-gray-300">
+		<div className="flex py-0 flex-row items-center w-full border-b bg-white h-15 border-b-gray-300">
 			<p
-				className={toDoDone ? "flex-1 h-full flex items-center line-through text-black " : "flex-1 flex items-center h-full text-black"}
+				className={toDoDone ? "flex-1 h-full flex items-center line-through text-gray-400" : "flex-1 flex items-center h-full text-black"}
 				onClick={() => onSelect(toDo)}
 			>
 				{toDo.text}
 			</p>
 
 			<div className="relative inline-block">
-				<div className={backgroundColor + " h-4 w-8 rounded-4xl border-black border-1"}
+				<div className={backgroundColor + " h-5 w-12 rounded-4xl border-black border-1"}
 					onClick={() => setShowPicker(!showPicker)}
 				>
 				</div>
@@ -41,7 +41,7 @@ function ToDo({ toDo, onSelect, onColorSelect }: ToDoProps) {
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 24 24"
 				fill="currentColor"
-				className="h-6 w-6 text-black "
+				className="h-7 w-7 text-black "
 				onClick={() => setToDoToggle(!toDoDone)}
 			>
 				<path d="M7 5c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2H7zm0 12V7h10l.002 10H7z" />

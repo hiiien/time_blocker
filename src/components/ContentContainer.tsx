@@ -14,6 +14,8 @@ export type ToDoType = {
 	endTime: ToDoDate;
 };
 
+
+
 function ContentContainer() {
 	const [toDos, setToDos] = useState<ToDoType[]>(() => {
 		const todoArray: ToDoType[] = [];
@@ -38,9 +40,9 @@ function ContentContainer() {
 			}
 		}
 
-		return todoArray.length > 0
+		return todoArray.length > 0 && todoArray[todoArray.length - 1].text.trim() === ""
 			? todoArray
-			: [{ id: Date.now().toString(), text: "", color: "blue", startTime: null, endTime: null }];
+			: [...todoArray, { id: Date.now().toString(), text: "", color: "blue", startTime: null, endTime: null }];
 	});
 
 	const [selectedToDo, setSelectedToDo] = useState<ToDoType | null>(null);
@@ -56,30 +58,6 @@ function ContentContainer() {
 
 
 
-	const handleCalenderUpdate = useCallback((now: Date) => {
-		setToDos(prev => {
-			const nowMs = now.getTime();
-
-			const filtered = prev.filter(t =>
-			(t.endTime
-				? (t.endTime instanceof Date ? t.endTime.getTime() : new Date(t.endTime).getTime()) >= nowMs : true)
-			);
-			if (filtered.length === 0 || filtered[filtered.length - 1].text !== "") {
-				filtered.push({ id: Date.now().toString(), text: "", color: lastUsedColor, startTime: null, endTime: null });
-			}
-
-			localStorage.clear()
-			filtered.forEach(todo => {
-				try {
-					localStorage.setItem(todo.id, JSON.stringify(todo)); // Update individual item in localStorage
-				} catch (error) {
-					console.error("Error saving to localStorage", error); // Graceful error handling
-				}
-			});
-
-			return filtered;
-		});
-	}, [lastUsedColor]);
 
 	const handleSave = (updatedText: string, updatedStart: ToDoDate, updatedEnd: ToDoDate) => {
 		setToDos(prev => {
@@ -95,6 +73,14 @@ function ContentContainer() {
 				filtered.push({ id: Date.now().toString(), text: "", color: lastUsedColor, startTime: null, endTime: null });
 			}
 
+			localStorage.clear()
+			filtered.forEach(todo => {
+				try {
+					localStorage.setItem(todo.id, JSON.stringify(todo)); // Update individual item in localStorage
+				} catch (error) {
+					console.error("Error saving to localStorage", error); // Graceful error handling
+				}
+			});
 
 			return filtered;
 		});
@@ -120,10 +106,11 @@ function ContentContainer() {
 	};
 
 	return (
-		<div className="flex flex-row w-full h-full">
+		<div className="flex flex-row w-full flex-1">
 			{selectedToDo && <EditPopup todo={selectedToDo} onCancel={handleCancel} onSave={handleSave} />}
 			<DayToDoContainer toDos={toDos} onSelect={handleSelectedToDo} onColorSelect={handleColorSelect} />
-			<ToDoCalender toDos={toDos} onCalenderUpdate={handleCalenderUpdate} />
+			<div className="self-stretch w-0.5 bg-black mb-5"> </div>
+			<ToDoCalender toDos={toDos} />
 		</div>
 	);
 }

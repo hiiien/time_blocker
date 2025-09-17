@@ -13,7 +13,7 @@ function DayToDoContainer({ toDos, onSelect, onColorSelect }: ToDoContainerProps
 
 	return (
 		<>
-			<div className="w-1/2 box-border pr-4 h-full">
+			<div className="w-1/2 box-border pr-4 h-auto">
 				{toDos.map((todo) => (
 					<ToDo
 						key={todo.id}
