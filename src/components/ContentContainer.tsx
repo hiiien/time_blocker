@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import DayToDoContainer from "./DayContainer";
 import ToDoCalender from "./ToDoCalender";
 import EditPopup from "./EditPopup";
+import MiddleDivider from "./middleDivider";
 
 export type Color = "red" | "blue" | "green";
 export type ToDoDate = Date | null;
@@ -109,10 +110,11 @@ function ContentContainer() {
 		<div className="flex flex-row w-full flex-1">
 			{selectedToDo && <EditPopup todo={selectedToDo} onCancel={handleCancel} onSave={handleSave} />}
 			<DayToDoContainer toDos={toDos} onSelect={handleSelectedToDo} onColorSelect={handleColorSelect} />
-			<div className="self-stretch w-0.5 bg-black mb-5"> </div>
+			<MiddleDivider />
 			<ToDoCalender toDos={toDos} />
 		</div>
 	);
 }
 
 export default ContentContainer;
+
