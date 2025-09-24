@@ -7,10 +7,10 @@ type ToDoProps = {
 	toDo: ToDoType,
 	onSelect: (toDo: ToDoType) => void,
 	onColorSelect: (todo: ToDoType, color: Color) => void,
+	onTodoDone: (todo: ToDoType) => void
 }
 
-function ToDo({ toDo, onSelect, onColorSelect }: ToDoProps) {
-	const [toDoDone, setToDoToggle] = useState(false)
+function ToDo({ toDo, onSelect, onColorSelect, onTodoDone }: ToDoProps) {
 	const [showPicker, setShowPicker] = useState(false)
 
 	const backgroundColor = ColorMap[toDo.color] || ColorMap["blue"]
@@ -23,7 +23,7 @@ function ToDo({ toDo, onSelect, onColorSelect }: ToDoProps) {
 	return (
 		<div className="flex py-0 flex-row items-center w-full border-b bg-white h-15 border-b-gray-300">
 			<p
-				className={toDoDone ? "flex-1 h-full flex items-center line-through text-gray-400" : "flex-1 flex items-center h-full text-black"}
+				className={toDo.todoDone ? "flex-1 h-full flex items-center line-through text-gray-400" : "flex-1 flex items-center h-full text-black"}
 				onClick={() => onSelect(toDo)}
 			>
 				{toDo.text}
@@ -42,7 +42,7 @@ function ToDo({ toDo, onSelect, onColorSelect }: ToDoProps) {
 				viewBox="0 0 24 24"
 				fill="currentColor"
 				className="h-7 w-7 text-black "
-				onClick={() => setToDoToggle(!toDoDone)}
+				onClick={() => onTodoDone(toDo)}
 			>
 				<path d="M7 5c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2H7zm0 12V7h10l.002 10H7z" />
 				<path d="M10.996 12.556 9.7 11.285l-1.4 1.43 2.704 2.647 4.699-4.651-1.406-1.422z" />

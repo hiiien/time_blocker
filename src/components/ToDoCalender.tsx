@@ -33,6 +33,7 @@ function ToDoCalender({ toDos }: CalenderProps) {
 		<div className={containerHeight + "w-1/2 relative h-auto"}>
 			{toDos.map((todo) => {
 				if (!todo.text.length) return null;
+				if (todo.todoDone) return null;
 
 				// ✅ filter using alignedNow (matches parent todo list logic)
 				if (todo.endTime && todo.endTime < nowDate) return null;

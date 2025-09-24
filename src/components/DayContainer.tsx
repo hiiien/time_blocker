@@ -6,11 +6,11 @@ type ToDoContainerProps = {
 	toDos: ToDoType[],
 	onSelect: (toDo: ToDoType) => void,
 	onColorSelect: (toDo: ToDoType, color: Color) => void,
+	onTodoDone: (todo: ToDoType) => void
 
 }
 
-function DayToDoContainer({ toDos, onSelect, onColorSelect }: ToDoContainerProps) {
-
+function DayToDoContainer({ toDos, onSelect, onColorSelect, onTodoDone }: ToDoContainerProps) {
 	return (
 		<>
 			<div className="w-1/2 box-border pr-4 h-auto">
@@ -20,6 +20,7 @@ function DayToDoContainer({ toDos, onSelect, onColorSelect }: ToDoContainerProps
 						toDo={todo}
 						onSelect={onSelect}
 						onColorSelect={onColorSelect}
+						onTodoDone={onTodoDone}
 					/>
 				))}
 

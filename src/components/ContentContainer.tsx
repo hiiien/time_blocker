@@ -13,6 +13,7 @@ export type ToDoType = {
 	color: Color;
 	startTime: ToDoDate;
 	endTime: ToDoDate;
+	todoDone: boolean;
 };
 
 
@@ -43,7 +44,7 @@ function ContentContainer() {
 
 		return todoArray.length > 0 && todoArray[todoArray.length - 1].text.trim() === ""
 			? todoArray
-			: [...todoArray, { id: Date.now().toString(), text: "", color: "blue", startTime: null, endTime: null }];
+			: [...todoArray, { id: Date.now().toString(), text: "", color: "blue", startTime: null, endTime: null, todoDone: false }];
 	});
 
 	const [selectedToDo, setSelectedToDo] = useState<ToDoType | null>(null);
@@ -71,15 +72,15 @@ function ContentContainer() {
 			// Filter out empty todos and add a new one if needed
 			const filtered = updated.filter((todo, i) => todo.text.trim() !== "" || i === updated.length - 1);
 			if (filtered.length === 0 || filtered[filtered.length - 1].text !== "") {
-				filtered.push({ id: Date.now().toString(), text: "", color: lastUsedColor, startTime: null, endTime: null });
+				filtered.push({ id: Date.now().toString(), text: "", color: lastUsedColor, startTime: null, endTime: null, todoDone: false });
 			}
 
 			localStorage.clear()
 			filtered.forEach(todo => {
 				try {
-					localStorage.setItem(todo.id, JSON.stringify(todo)); // Update individual item in localStorage
+					localStorage.setItem(todo.id, JSON.stringify(todo));
 				} catch (error) {
-					console.error("Error saving to localStorage", error); // Graceful error handling
+					console.error("Error saving to localStorage", error);
 				}
 			});
 
@@ -106,10 +107,18 @@ function ContentContainer() {
 		});
 	};
 
+	const handleTodoDone = (todo: ToDoType) => {
+		setToDos(prev => {
+			const updated = prev.map(t => t.id === todo.id ? { ...t, todoDone: !t.todoDone } : t)
+
+			return updated
+		})
+	}
+
 	return (
 		<div className="flex flex-row w-full flex-1">
 			{selectedToDo && <EditPopup todo={selectedToDo} onCancel={handleCancel} onSave={handleSave} />}
-			<DayToDoContainer toDos={toDos} onSelect={handleSelectedToDo} onColorSelect={handleColorSelect} />
+			<DayToDoContainer toDos={toDos} onSelect={handleSelectedToDo} onColorSelect={handleColorSelect} onTodoDone={handleTodoDone} />
 			<MiddleDivider />
 			<ToDoCalender toDos={toDos} />
 		</div>
