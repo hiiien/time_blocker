@@ -111,6 +111,14 @@ function ContentContainer() {
 		setToDos(prev => {
 			const updated = prev.map(t => t.id === todo.id ? { ...t, todoDone: !t.todoDone } : t)
 
+			updated.forEach(t => {
+				try {
+					localStorage.setItem(t.id, JSON.stringify(t)); // Update the color in localStorage
+				} catch (error) {
+					console.error("Error saving color to localStorage", error); // Graceful error handling
+				}
+			});
+
 			return updated
 		})
 	}
